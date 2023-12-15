@@ -16,7 +16,7 @@ while True:
         spotifyAuth = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
                                                         client_secret=CLIENT_SECRET,
                                                         redirect_uri="https://google.com/",
-                                                        scope="user-read-playback-state, user-modify-playback-state, useropen_browser=False"))
+                                                        scope="user-read-playback-state, user-modify-playback-state, open_browser=False"))
 
         while True:
             if rfid.tagPresent():
