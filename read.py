@@ -5,25 +5,42 @@ from spotipy.oauth2 import SpotifyOAuth
 from PiicoDev_RFID import PiicoDev_RFID
 from PiicoDev_Unified import sleep_ms
 
-rfid = PiicoDev_RFID()
 
 DEVICE_ID=os.getenv('MY_DEVICE_ID')
 CLIENT_ID=os.getenv('MY_CLIENT_ID')
 CLIENT_SECRET=os.getenv('MY_CLIENT_SECRET')
 
-spotifyAuth = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
+while True:
+    try:
+        rfid = PiicoDev_RFID()
+        spotifyAuth = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
                                                         client_secret=CLIENT_SECRET,
                                                         redirect_uri="https://google.com/",
                                                         scope="user-read-playback-state, user-modify-playback-state, useropen_browser=False"))
 
+        while True:
+            if rfid.tagPresent():
+                print("Please scan a record to listen to :)")
+                id = rfid.readID()
+                print("You have scanned: ", id)
+                spotifyAuth.transfer_playback(device_id=DEVICE_ID, force_play=False)
+                if (id=='04:26:85:FA:3F:74:81'):
+                    sp.start_playback(device_id=DEVICE_ID, uris=['spotify:track:4GKphhKJprqrPkLuU8Vsyu'])
+                    sleep_ms(100)
 
-#print('Place tag near the RFID Module')
-#
-#while True:
-#    if rfid.tagPresent():
-#       id = rfid.readID()
-#       id = rfid.readID(detail=True)
-#
-#       print(id)
-#
-#    sleep_ms(100)
+    except Exception as e:
+        print(e)
+        pass
+
+'''
+print('Place tag near the RFID Module')
+
+while True:
+    if rfid.tagPresent():
+       id = rfid.readID()
+      # id = rfid.readID(detail=True)
+
+       print(id)
+
+    sleep_ms(100)
+'''
